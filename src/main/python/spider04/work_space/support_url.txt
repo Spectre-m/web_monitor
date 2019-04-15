@@ -1,0 +1,17 @@
+支持网站：
+
+1.新浪新闻网
+url: https://news.sina.com.cn/
+selectors: '#syncad_1 > h1,p:nth-of-type(4) > a,#ad_entry_b2 > ul > li.topli14,#ad_entry_b2 > ul > li'
+
+2.搜狐新闻
+url: 
+selectors: ''
+
+3.电影天堂
+url:https://www.dy2018.com/index.html
+selectors:'div > div.co_content222 > ul > li'
+
+4.浙江工商大学新闻网-通知公告
+url:http://news.zjgsu.edu.cn/18/
+selectors:

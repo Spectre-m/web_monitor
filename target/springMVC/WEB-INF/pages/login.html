@@ -1,0 +1,149 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta charset="utf-8" http-equiv="X-UA-Compatible" content=IE=eage/>
+    <title>WEB内容实时监控系统登陆</title>
+    <link rel="stylesheet" type="text/css" href="css/login.css"/>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script src="js/sweet-alert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
+    <script src="js/login.js"></script>
+</head>
+<script type="text/javascript">
+    // 判断pc浏览器是否缩放，若返回100则为默认无缩放，如果大于100则是放大，否则缩小
+    function detectZoom() {
+        var ratio = 0,
+            screen = window.screen,
+            ua = navigator.userAgent.toLowerCase();
+
+        if (window.devicePixelRatio !== undefined) {
+            ratio = window.devicePixelRatio;
+        }
+        else if (~ua.indexOf('msie')) {
+            if (screen.deviceXDPI && screen.logicalXDPI) {
+                ratio = screen.deviceXDPI / screen.logicalXDPI;
+            }
+        }
+        else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+            ratio = window.outerWidth / window.innerWidth;
+        }
+
+        if (ratio) {
+            ratio = Math.round(ratio * 100);
+        }
+
+        return ratio;
+    };
+    //window.onresize 事件可用于检测页面是否触发了放大或缩小。
+    $(function () {
+        //alert(detectZoom())
+    })
+    $(window).on('resize', function () {
+        isScale();
+    });
+    //判断PC端浏览器缩放比例不是100%时的情况
+    function isScale() {
+        var rate = detectZoom();
+        if (rate == 100) {
+            $("#title").css("left", "35%");
+            $("#login1").css("left", "31%");
+        }
+        else if (rate != 100) {
+
+            changeScreencss(rate);
+            if (rate < 50 || rate > 125) {
+                alert("伸缩比例会导致页面布局出错,建议使用100%的(ctrl+0)")
+            }
+            console.log(1)
+
+        }
+    }
+    function changeScreencss(rate) {
+
+        var origin1 = 35;
+        var origin2 = 31;
+        if (rate > 100) {
+            var num = (rate - 100) / 10;
+            origin1 = origin1 - num * 1.4;
+            origin2 = origin2 - num * 1.9;
+
+            var a = origin1 + "%";
+            var b = origin2 + "%"
+
+            $("#title").css("left", a);
+            $("#login1").css("left", b);
+        }
+        else if (rate < 100) {
+            var num = (100 - rate) / 10;
+            origin1 = origin1 + num * 1.4;
+            origin2 = origin2 + num * 1.9;
+
+            var a = origin1 + "%";
+            var b = origin2 + "%"
+
+
+            $("#login1").css("left", b);
+        }
+
+    }
+
+    //阻止pc端浏览器缩放js代码
+    //由于浏览器菜单栏属于系统软件权限，没发控制，我们着手解决ctrl/cammond + +/- 或 Windows下ctrl + 滚轮 缩放页面的情况，只能通过js来控制了
+    // jqeury version
+    $(document).ready(function () {
+        isScale();
+        // chrome 浏览器直接加上下面这个样式就行了，但是ff不识别
+        $('body').css('zoom', 'reset');
+        $(document).keydown(function (event) {
+            //event.metaKey mac的command键
+            if ((event.ctrlKey === true || event.metaKey === true) && (event.which === 61 || event.which === 107 || event.which === 173 || event.which === 109 || event.which === 187 || event.which === 189)) {
+                event.preventDefault();
+            }
+        });
+        $(window).bind('mousewheel DOMMouseScroll', function (event) {
+            if (event.ctrlKey === true || event.metaKey) {
+                event.preventDefault();
+            }
+        });
+
+        if ($(document.body).outerWidth(true) > 1250 + $(document.body).outerHeight(true) / 3 && $(document.body).outerWidth(true) < 1920) {
+
+
+            $("#login1").css("left", ($(document.body).outerWidth(true) / 2) - 365);
+        }
+        if ($(document.body).outerWidth(true) < 1250 + $(document.body).outerHeight(true) / 3) {
+            $(document.body).css("overflow-x", "auto");
+            $("#login1").css("left", 242);
+            if ($(document.body).outerHeight(true) > 850) {
+                $("#login1").css("left", 242 + $(document.body).outerHeight(true) / 5);
+            }
+        }
+    });
+
+</script>
+
+<body background="img/background1.jpg">
+<div id="login1">
+    <h1 id="text">WEB内容实时监控系统</h1>
+    <form action="/login" method="post">
+        <a id="text1"><b>账号:</b></a>
+        <input type="text" id="username" name="username" placeholder="请输入用户名"/>
+        <br>
+        <a id="text2"><b>密码:</b></a>
+        <input type="password" id="password" name="password" placeholder="请输入密码"/>
+        <br>
+        <input type="checkbox" id="check" name="remember" value="记住密码"/>
+        <x id="text3"><b>记住密码</b></x>
+        <a href="find_password.html" id="herf"><b>忘记密码?</b></a>
+        <br><a id="msg"></a><br>
+        <input type="button" id="sub1" name="sub1" value="登录"/>
+        <input type="button" id="sub2" name="sub2" value="注册"/>
+
+    </form>
+
+
+</div>
+</body>
+</html>

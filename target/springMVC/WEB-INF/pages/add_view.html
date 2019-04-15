@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/Add_view.css" />
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<link href="css/animate.css" rel="stylesheet" type="text/css">
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<link href="css/noticejs.css" rel="stylesheet" type="text/css">
+		<script src="js/notice.js"></script>
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+		<script src="js/bootstrap.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+                var user=localStorage.getItem("username");
+                $("#name1").text(user);
+                $("#keyword1").fadeOut();
+                $("#keyword2").fadeOut();
+				$("#al2").css("background", "#00BEFC");
+				$("input[name=choice]").each(function() {
+					$(this).click(function() {
+						var discount = $(this).val();
+						if(discount == "单选") {
+                            $("#keyword1").fadeOut();
+                            $("#keyword2").fadeOut();
+						}
+						if(discount == "多选") {
+                            $("#keyword1").fadeIn();
+                            $("#keyword2").fadeIn();
+                        }
+					});
+				});
+				$("#submit1").click(function() {
+					var startTime = $("#start_time").val();
+					var start = new Date(startTime.replace("-", "/").replace("-", "/"));
+					var endTime = $("#end_time").val();
+					var end = new Date(endTime.replace("-", "/").replace("-", "/"));
+					if(end < start) {
+						alert("开始时间不能小于结束时间");
+						return false;
+					}
+					var website = $("#website").val();
+					//判断URL地址的正则表达式为:http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?
+					//下面的代码中应用了转义字符"\"输出一个字符"/"
+					var Expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
+					var objExp = new RegExp(Expression);
+
+					if(objExp.test(website) != true) {
+						alert("网址格式不正确！请重新输入(需加入http/https协议)");
+						return false;
+					}
+					var pre=$("#precedence").val();
+					if(pre=="优 先 级"){
+						alert("请填写优先级");
+					}
+					var type=$("#msg_push_method").val();
+					if(type=="消 息 推 送 方 式"){
+						alert("请填写推送方式");
+					}
+					var key=$("#keyword").val();
+					if(key==""){
+						alert("请填写关键词");
+					}
+					var selector_text =$("#selector_text").val();
+					if(selector_text ==""){
+					    alert("请填写选择器");
+					}
+                    $.ajax({
+                        url: "/addWebsite",
+                        type: "POST",
+                        data: JSON.stringify({'start_time':startTime, 'end_time':endTime,'website':website,'pre':pre,'msg_push_method':type,'keyword':key,'selectors':selector_text}),
+                        contentType: "application/json",
+                        success: function (result) {
+                            if(result == "success"){
+                                alert("添加成功！");
+                            } else {
+                                alert("添加失败，请稍后重试！")
+							}
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                        }
+                    });
+
+                });
+
+
+			});
+
+		</script>
+
+		<title>WEB内容实时监控系统</title>
+	</head>
+
+	<body>
+		<div class="menu-bar">
+			<h1 style="text-align: center;" id="h1"><b>W  E  B</b></h1>
+			<h1 style="text-align: center;" id="h2"><b>内容实时监控系统</b></h1>
+			<div id="line"></div>
+			<ul id="nav">
+				<li >
+					<a href="main_view.html" id="al1">提 醒 信 息</a>
+				</li>
+				<li>
+					<a href="add_view.html" id="al2">添 加 信 息</a>
+				</li>
+				<li>
+					<a href="log_message.html" id="al3">历 史 监 控 信 息</a>
+				</li>
+				<li>
+					<a href="private_set.html" id="al4">个 人 设 置</a>
+				</li>
+			</ul>
+
+			<button value="退出" id="exit"><a1 href="http://www.divcss5.com/wenji/">退 出</a1></button>
+		</div>
+		<div class="title-bar">
+			<form action="" method="post">
+				<input type="search" name="search" id="search" placeholder="请输入关键词进行搜索">
+				<input type="image" src="img/search.png" name="submit" id="submit" />
+				<img src="img/internet.png" id="img_internet" />
+				<img src="img/img_menu.png" id="set" />
+
+				<img src="img/background3.jpg" id="photo" />
+				<a2 id="name1"></a2>
+			</form>
+
+		</div>
+		<div class="main">
+			<form id="form_web_info" action="/Add_view" method="post">
+				<am id="website_text">网 址</am><br>
+				<input type="text" name="website" id="website" placeholder="请输入网址" /><br>
+				<am id="outset_time">开 始 时 间 :</am>
+				<input type="date" name="start_time" id="start_time" />
+				<am id="sunset_time">结 束 时 间 :</am>
+				<input type="date" name="end_time" id="end_time" /><br>
+				<select id="precedence" name="percedence">
+					<option value="无">优 先 级</option>
+					<option value="紧急">紧 急</option>
+					<option value="重要">重 要</option>
+					<option value="一般">一 般</option>
+					<option value="轻度">轻 度</option>
+					<option value="不重要">不 重 要</option>
+				</select>
+				<select id="msg_push_method" name="percedence">
+					<option value="无">消 息 推 送 方 式</option>
+					<option value="短信">短信</option>
+					<option value="微信公众号">微信公众号</option>
+					<option value="页面提醒">页面提醒</option>
+					<option value="邮箱">邮箱</option>
+				</select><br><br>
+				<am id="selector">选 择 器:</am><input id="selector_text" type="text" placeholder="请 输 入 选 择 器"><br>
+				<am id="keyword_text">关 键 词：</am>
+				<input type="text" name="keyword" id="keyword" placeholder="请 输 入 关 键 词" />
+				<input type="radio" name="choice" id="choice1" value="单选" checked="java" />
+				<am>单 选</am>
+				<input type="radio" name="choice" id="choice2" value="多选" />
+				<am>多 选</am><br>
+				<input type="text" name="keyword1" id="keyword1" placeholder="关 键 词 2" /><br>
+				<input type="text" name="keyword2" id="keyword2" placeholder="关 键 词 3" /><br>
+				<input type="button" name="submit" id="submit1" value="提 交" />
+				<input type="reset" value="清 除" id="reset" />
+			</form>
+		</div>
+
+	</body>
+
+</html>

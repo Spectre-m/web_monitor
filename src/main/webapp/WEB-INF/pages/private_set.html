@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/private_set.css" />
+
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<link href="css/animate.css" rel="stylesheet" type="text/css">
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<link href="css/noticejs.css" rel="stylesheet" type="text/css">
+		<script src="js/notice.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/sweet-alert.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
+		<script type="text/javascript">
+            var user=localStorage.getItem("username");
+            $("#name1").text(user);
+			function getperson_msg(){
+                $.ajax({
+                    url: "/private_set",
+                    type: "POST",
+                    data: {'username': user},
+                    success: function (result) {
+                        if(result!=null){
+                            $("#name").val(result["name"]);
+                            $("#email").val(result["email"]);
+                            $("#tel").val(result["tel"]);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                    }
+                });
+			}
+			$(document).ready(function() {
+ 				getperson_msg();
+				$("#al4").css("background", "#00BEFC");
+				$("#submit4").click(function() {
+				    var  name=$("#name").val();
+					var email = $("#email").val();
+					if(email.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) == -1 && email != "") {
+						$("#error").innerText="邮箱格式错误";
+						return false;
+					}
+					var tel = $("#tel").val();
+					if((tel.length!=11||tel[1]!=1)&&tel!=""){
+						alert("电话号码错误");
+						return false;
+					}
+                    $.ajax({
+                        url: "/private_set",
+                        type: "POST",
+                        data: {'username': user,'name':name,'email':email,'tel':tel},
+                        success: function (result) {
+                            if(result!=null){
+                                sweetAlert("successful", "修改成功", "success");
+                            }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                        }
+                    });
+
+
+				});
+                $("#exit").click(function () {
+                    $.ajax({
+                        url: "/logout",
+                        type: "POST",
+                        data: JSON.stringify({'username': user}),
+                        contentType: "application/json",
+                        success: function (res) {
+                            window.location.href="login.html";
+                            localStorage.removeItem("username");
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                        }
+                    });
+                });
+			});
+		</script>
+
+		<title>WEB内容实时监控系统</title>
+	</head>
+
+	<body>
+		<div class="menu-bar">
+			<h1 style="text-align: center;" id="h1"><b>W  E  B</b></h1>
+			<h1 style="text-align: center;" id="h2"><b>内容实时监控系统</b></h1>
+			<div id="line"></div>
+			<ul id="nav">
+				<li>
+					<a href="main_view.html" id="al1">提 醒 信 息</a>
+				</li>
+				<li>
+					<a href="add_view.html" id="al2">添 加 信 息</a>
+				</li>
+				<li>
+					<a href="log_message.html" id="al3">历 史 监 控 信 息</a>
+				</li>
+				<li>
+					<a href="private_set.html" id="al4">个 人 设 置</a>
+				</li>
+			</ul>
+
+			<button value="退出" id="exit"><ab href="http://www.divcss5.com/wenji/">退 出</ab></button>
+		</div>
+		<div class="title-bar">
+			<form action="" method="post">
+				<img src="img/background3.jpg" id="photo" />
+				<a2 id="name1"></a2>
+			</form>
+
+		</div>
+		<div class="main">
+
+			<form id="private_set" action="" method="post">
+				<img src="img/background3.jpg" id="photo_main" />
+				<input type="submit" name="submit1" id="submit1" value="设置头像" />
+				<a1 id="a1">姓 名</a1>
+				<input type="text" name="name" id="name" /><br>
+
+
+				<a1 id="a6">E-mail</a1>
+					<input type="text" name="email" id="email" /><br>
+					<a1 id="a7">手 机 号</a1>
+					<input type="text" name="tel" id="tel" /><br>
+					<input type="reset" name="submit3" id="submit3" value="取消" />
+					<input type="button" name="submit4" id="submit4" value="保存" />
+					<span id="error"></span>
+			</form>
+		</div>
+
+	</body>
+
+</html>

@@ -1,0 +1,145 @@
+body{
+		  position: absolute;
+			background-repeat: no-repeat;
+			background-size: cover;	
+			width: 100%;
+			height: 100%;
+			overflow-x: hidden;
+			overflow-y: hidden;
+			
+			}
+
+			#text{
+				margin-left: 14%;
+				font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 50px;
+				height: 40px;
+			}
+
+			#login1{
+				float: left;
+				min-width: 700px;
+				background-color: transparent;
+				position:absolute;
+				left: 31%;
+				top: 50%;
+
+			}
+			#text1{
+				position:absolute;	
+				font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 25px;
+				margin-left: 13%;
+				margin-top: 5%;
+								
+			}
+			#text2{
+				position:absolute;	
+				font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 25px;
+				margin-left: 13%;
+				margin-top: 4%;
+			}
+			
+			#username{
+				margin-top:4.5% ;
+				margin-left: 25%;
+				width:65% ;
+				height:40px ;
+				text-align: center;
+				font-size: 15px;
+				border-width:5px;
+  			    background-color:#EBEBEB;
+  				box-sizing:border-box;
+  				border-width:1px;
+  				border-style:dashed;
+  				border-color:#9B9D9D;
+  				border-radius:5px;
+  				
+			}
+			#password{
+				margin-top:4% ;
+				margin-left: 25%;
+				width:65% ;
+				height:40px ;
+				font-size: 15px;
+				text-align: center;
+				font-size: 15px;
+				border-width:5px;
+  			    background-color:#EBEBEB;
+  				box-sizing:border-box;
+  				border-width:1px;
+  				border-style:dashed;
+  				border-color:#9B9D9D;
+  				border-radius:5px;
+			}
+			
+			#sub1{
+			    margin-left: 24%;
+			    margin-top:3% ; 
+  			   	border-width:5px;
+  			    background-color:#EBEBEB;
+  				box-sizing:border-box;
+  				border-width:1px;
+  				border-style:dashed;
+  				border-color:#9B9D9D;
+  				border-radius:5px;
+  				font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 20px;
+  				width:20%;
+  				height:35px;
+			}
+			#sub2{
+				margin-left: 19%;
+				border-width:0px;
+  			    border-width:5px;
+  			    background-color:#EBEBEB;
+  				box-sizing:border-box;
+  				border-width:1px;
+  				border-style:dashed;
+  				border-color:#9B9D9D;
+  				border-radius:5px;
+  				font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 20px;
+				width:20%;
+  				height:35px;
+			}
+			#check{
+				font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 15px;
+				margin-left: 22%;
+				margin-top: 3%;
+			}
+		   #text3{
+		   		font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 15px;
+				margin-left: 1%;
+		   }
+			#herf{
+				font-family:"微软雅黑";
+				color: #1C3E63;
+				letter-spacing: 1.5px;	
+				font-size: 15px;
+				margin-left: 35%;
+				margin-top: 3%;
+			}
+			#msg{
+				color: red;
+				font-size: 15px;
+				margin-left:70%;
+			}
+			

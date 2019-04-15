@@ -1,0 +1,43 @@
+<!DOCTYPE >
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>WEB内容实时监控系统注册</title>
+		<link rel="stylesheet" type="text/css" href="css/enroll.css" />
+		<script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/enroll.js"></script>
+		<script type="text/javascript" src="js/md5.js"></script>
+		<script src="js/sweet-alert.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
+	</head>
+	<body background="img/background2.jpg">
+		<div id="login">
+			<form action="/enroll" method="post">
+				<a id="a1"><b>账号:</b></a>
+				<input type="text" id="username" name="username" placeholder="请输入用户名"/>
+				<br>
+				<a id="a2"><b>电话号码:</b></a>	
+				<input type="text" id="phone" name="phone" placeholder="请输入电话号码" />
+				<br>
+				<a id="a3"><b>电子邮箱:</b></a>	
+				<input type="text" id="email" name="email" placeholder="请输入电子邮箱" />
+				<br>
+				<a id="a4"><b>输入验证码:</b></a>	<input type="text" id="check"/>
+				<input type="button" id="sub3" value="获取验证码" />
+				<br>
+				<a id="a5"><b>输入密码:</b></a>	
+				<input type="password" id="password" name="password" placeholder="请设置密码" />
+				<br>
+				<a id="a6"><b>确认密码:</b></a>	
+				<input type="password" id="password2" name="password2" placeholder="请再次确认密码" />
+				<br><a id="msg"></a><br>
+				<input type="button" id="sub1" value="注册" />
+				<input type="button" id="sub2" value="返回" />
+			</form>
+		
+			
+			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/main_view.css" />
+	<link href="css/animate.css" rel="stylesheet" type="text/css">
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<link href="css/noticejs.css" rel="stylesheet" type="text/css">
+	<script src="js/notice.js"></script>
+	<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+	<script src="js/bootstrap.js"></script>
+	<script src="js/sweet-alert.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
+	<script type="text/javascript">
+        var msg=new Array(4);
+        var user=localStorage.getItem("username");
+        var totalMsg;
+        var page = {
+            currPage:1, //当前页面，初始化为1
+            totalPage:1,//总页面，通过计算获得
+            pageLength:1,//按钮数量，可以自己把控
+            startPage:1,//当前显示的第一个按钮的值
+            endPage:1//当前显示的最后一个按钮的值
+        }
+        getSumPage();
+        function getSumPage() {
+            $.ajax({
+                url: "/getSumOfHistoryByUsername",
+                type: "POST",
+                data: {'username': user},
+                success: function (result) {
+                    if(result!=null){
+                        var x=result;
+                        var y=parseInt(x/10);
+                        if(x%10!=0){
+                            y++;
+                        }
+                        page.totalPage=y;
+                        totalMsg = result;
+                        console.info(totalMsg+"--"+page.totalPage)
+                        if(page.totalPage>6){
+                            page.pageLength=6;
+                            page.endPage=6;
+                        }
+                        else{
+                            page.pageLength=page.totalPage;
+                            if( page.pageLength%2!=0){
+                                page.pageLength= page.pageLength+1;
+                                page.endPage=page.pageLength;
+                            }
+                        }
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                }
+            });
+        }
+        function getData(Start,End){
+            console.info(Start+"-"+End)
+            $.ajax({
+                url: "/findHistoryByUsernamePaging",
+                type: "POST",
+                data: {'username': user,'start':Start,'end':End},
+                success: function (result) {
+                    if(result!=null){
+                        AddBox(result);
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                }
+            });
+        }
+        function setStartorEnd(currPage){
+            var totalPage=page.totalPage;
+            var start=1;var end=10;
+            //console.info(currPage+"以及"+totalPage);
+            if(currPage<totalPage){
+
+                start=start*((currPage-1)*10)+1;
+                end=start+9;
+                getData(start,end);
+            }
+            else if(currPage==totalPage){
+                start=start*((currPage-1)*10)+1;
+                getData(start,totalMsg);
+            }
+        }
+        $(document).ready(function() {
+
+            $("#name1").text(user);
+            $("#al1").css("background", "#003652");
+            $("#al3").css("background", "#00BEFC");
+
+            $(function(){
+                //这里假设由异步返回了信息，然后我们计算出了页数
+                console.info(page)
+                setStartorEnd(page.currPage);
+                //初始化按钮，即第一次网页面上添加按钮
+                addButtons(page.startPage , page.pageLength);
+                $("#page .page-btn").first().addClass("curr-page");
+                //禁用"上一页"按钮，因为默认是第一页，第一页没有上一页
+                isDisabled(page.currPage,page.totalPage);
+
+                //绑定“上一页”按钮的点击事件
+                $(document).on("click","#page .prev",function(){
+                    page.currPage =  parseInt(page.currPage) - 1 ;
+                    pageIteration(page.currPage);
+                    isDisabled(page.currPage,page.totalPage);
+                    setStartorEnd(page.currPage);
+                })
+
+                //绑定“下一页”按钮点击事件
+                $(document).on("click","#page .next",function(){
+                    page.currPage =  parseInt(page.currPage) + 1 ;
+                    pageIteration(page.currPage);
+                    isDisabled(page.currPage,page.totalPage);
+                    setStartorEnd(page.currPage);
+                })
+
+                //绑定“页码”按钮的点击事件
+                $(document).on("click",".page-btn",function(){
+                    $this = $(this);
+                    page.currPage = parseInt($this.text());
+                    pageIteration(page.currPage);
+                    isDisabled(page.currPage,page.totalPage);
+                    setStartorEnd(page.currPage);
+                })
+            })
+
+            //添加分页插件，根据总页数来添加按钮
+            function addButtons(startPage,pageLength){
+                $("#page").html(" ");
+                var _html = "<center><button class='btn btn-default prev' ><<上一页</button> ";
+                for(var i = startPage ; i < startPage + pageLength ; i++){
+                    _html += "<button class='btn btn-default page-btn' data-pageno="+i+">"+ i +"</button> ";
+                }
+                _html += " <button class='btn btn-default next'>下一页>></button></center>";
+                $("#page").html(_html);
+            }
+
+            //分页按钮迭代(最要是对"上一页"和”下一页“是否禁用的判断)
+            function  isDisabled(pagenum,totalpage){
+                if(totalpage ==0 || totalpage ==1){
+                    $("#page .prev").attr("disabled",true);
+                    $("#page .next").attr("disabled",true);
+                }else if(pagenum ==1){
+                    $("#page .prev").attr("disabled",true);
+                    $("#page .next").removeAttr("disabled");
+                }else if(pagenum == totalpage){
+                    $("#page .next").attr("disabled",true);
+                    $("#page .prev").removeAttr("disabled");
+                }else{
+                    $("#page .next").removeAttr("disabled");
+                    $("#page .prev").removeAttr("disabled");
+                }
+            }
+
+            //按钮迭代器
+            function pageIteration(currPage){
+                if(page.currPage != 1 && page.currPage == page.startPage ){
+                    page.startPage = page.currPage - page.pageLength/2 ;
+                    page.endPage = page.currPage + page.pageLength/2 -1;
+                    addButtons(page.startPage , page.pageLength);
+                    $("#page .page-btn").eq(page.pageLength/2).addClass("curr-page");
+                }else if(page.currPage != page.totalPage && page.currPage == page.endPage){
+                    page.startPage = page.currPage - page.pageLength/2  + 1;
+                    page.endPage = (page.currPage + page.pageLength/2) >= page.totalPage ?  page.totalPage : (page.currPage + page.pageLength/2);
+                    addButtons(page.startPage , page.pageLength /2 + (page.endPage == page.totalPage ? (page.endPage - page.currPage) : page.pageLength/2));
+                    $("#page .page-btn").eq(page.pageLength/2 -1).addClass("curr-page");
+                }
+                $("#page .page-btn").removeClass("curr-page").parent().find("[data-pageno="+currPage+"]").addClass("curr-page");
+            }
+            $("#exit").click(function () {
+                $.ajax({
+                    url: "/logout",
+                    type: "POST",
+                    data: JSON.stringify({'username': user}),
+                    contentType: "application/json",
+                    success: function (res) {
+                        window.location.href="login.html";
+                        localStorage.removeItem("username");
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                    }
+                });
+            });
+            $("#exit").click(function () {
+                $.ajax({
+                    url: "/logout",
+                    type: "POST",
+                    data: JSON.stringify({'username': user}),
+                    contentType: "application/json",
+                    success: function (res) {
+                        window.location.href="login.html";
+                        localStorage.removeItem("username");
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(("no " + XMLHttpRequest.readyState + " " + XMLHttpRequest.status));
+                    }
+                });
+            });
+        });
+        function AddBox(result){
+            $("#table  tr:not(:first)").html("");
+            $.each(result,function(index,obj){
+                $("#table").append('<tr  id="tr'+obj["id"]+'"><td >' + obj["monitor_date"] + '</td><td>' + obj["website"] + '</td><td>'+ obj["msg_push_method"]+'</td><td>'+ obj["keyword"]+'</td></tr>');
+
+            });
+
+        }
+
+	</script>
+
+
+	<title>WEB内容实时监控系统</title>
+</head>
+
+<body>
+<div class="menu-bar">
+	<h1 style="text-align: center;" id="h1"><b>W  E  B</b></h1>
+	<h1 style="text-align: center;" id="h2"><b>内容实时监控系统</b></h1>
+	<div id="line"></div>
+	<ul id="nav">
+		<li >
+			<a href="main_view.html" id="al1">提 醒 信 息</a>
+		</li>
+		<li>
+			<a href="add_view.html" id="al2">添 加 信 息</a>
+		</li>
+		<li>
+			<a href="log_message.html" id="al3">历 史 监 控 信 息</a>
+		</li>
+		<li>
+			<a href="private_set.html" id="al4">个 人 设 置</a>
+		</li>
+	</ul>
+
+	<button value="退出" id="exit"><a1>退 出</a1></button>
+</div>
+<div class="title-bar">
+	<form action="" method="post">
+		<input type="search" name="search" id="research" placeholder="请输入关键词进行搜索">
+		<input type="image" src="img/search.png" name="submit" id="submit" />
+		<img src="img/internet.png" id="img_internet" />
+		<img src="img/img_menu.png" id="set" />
+
+		<img src="img/background3.jpg" id="photo" />
+		<a2 id="name1"></a2>
+	</form>
+
+</div>
+<div class="main">
+
+	<div id="title">
+
+		<div id="title_name">
+			<a3 id="title_name">监 控 获 取 信 息</a3>
+		</div>
+	</div>
+
+	<table id="table" frame="box" rules="all" >
+		<tr>
+			<th id="date_web">日期</th>
+			<th>网址</th>
+			<th>消息推送方式</th>
+			<th>关键字</th>
+		</tr>
+	</table>
+	<div id="page">
+		<!--在这里放一个page的盒子，里面的内容由js添加-->
+	</div>
+</div>
+
+</body>
+
+</html>
